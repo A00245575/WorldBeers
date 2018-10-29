@@ -7,7 +7,8 @@ function getBeers(){
         global $db;
         $beers = $db->query($query);
         $beers = $beers->fetchAll (PDO::FETCH_ASSOC);
-        echo '("beers": '.json_encode($beers).')';
+        header("Content-Type: application/json", true);
+        echo '{"beers": '.json_encode($beers).'}';
     } 
     catch (Exception $e) 
     {
@@ -70,7 +71,7 @@ function addBeer() {
     
 }
 
-function updateBeer() {
+function updateBeer($id) {
     global $app;
     $request=$app->request();
     $beer= json_decode($request->getBody());
@@ -79,7 +80,7 @@ function updateBeer() {
     $type=$beer->type;
     $description=$beer->description;
     $price=$beer->price;
-    $query="Update beers set name='$name', country='$country', type='$type', description='$description', price='$price'";
+    $query="Update beers set name='$name', country='$country', type='$type', description='$description', price='$price' Where beer_id=$id";
     try{
         global $db;
         $db->exec($query);
@@ -91,7 +92,7 @@ function updateBeer() {
     }
 }
 
-function deleteBeer() {
+function deleteBeer($id) {
     echo $id;
     $query = "Delete from beers Where beer_id=$id";
     try {

@@ -7,7 +7,7 @@ function getUsers(){
         global $db;
         $users = $db->query($query);
         $users = $users->fetchAll (PDO::FETCH_ASSOC);
-        echo '("users": '.json_encode($users).')';
+        echo '{"users": '.json_encode($users).'}';
     } 
     catch (Exception $e) 
     {
@@ -53,7 +53,8 @@ function addUser() {
     $username=$user->user_name;
     $password=$user->user_password;
     $name=$user->name;
-    $query = "Insert into users(user_name, user_password, name) values ('$username', '$password', '$name')";
+    $photo=$user->photo;
+    $query = "Insert into users(user_name, user_password, name, photo) values ('$username', '$password', '$name', '$photo')";
     try 
     {
         global $db;
@@ -67,14 +68,14 @@ function addUser() {
     }
 }
 
-function updateUser() {
+function updateUser($id) {
     global $app;
     $request=$app->request();
     $user= json_decode($request->getBody());
     $username=$user->user_name;
     $password=$user->user_password;
     $name=$user->name;
-    $query = "Update users set user_name='$username', user_password='$password', name='$name'";
+    $query = "Update users set user_name='$username', user_password='$password', name='$name' Where id=$id";
     try{
         global $db;
         $db->exec($query);
@@ -86,7 +87,7 @@ function updateUser() {
     }
 }
 
-function deleteUser() {
+function deleteUser($id) {
     echo $id;
     $query = "Delete from users Where user_id=$id";
     try {
